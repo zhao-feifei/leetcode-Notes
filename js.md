@@ -23,3 +23,35 @@ var addStrings = function (num1, num2) {
 
 
 
+88.合并两个有序数组
+
+``` javascript
+var merge = function(nums1, m, nums2, n) {
+    let index1 =m- 1,
+        index2 =n - 1,
+        tail =m+n-1;
+        while(index1>=0&&index2>=0){
+            if(nums1[index1]>nums2[index2]){
+                nums1[tail]=nums1[index1];
+                index1--;
+                tail--;
+            }else{
+                nums1[tail]=nums2[index2];
+                index2--;
+                tail--;
+            }
+        }
+        while(index1>=0&&tail>=0){
+            nums1[tail]=nums1[index1];
+            index1--;
+            tail--;
+        }
+        while(index2>=0&&tail>=0){
+            nums1[tail]=nums2[index2];
+            index2--;
+            tail--;
+        }
+        return nums1;
+};
+```
+
