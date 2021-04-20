@@ -55,3 +55,23 @@ var merge = function(nums1, m, nums2, n) {
 };
 ```
 
+1.两数之和
+
+``` javascript
+var twoSum = function(nums, target) {
+    let start=0,end=nums.length-1;
+    nums.sort();
+    while (start!=end) {
+        if(nums[start]+nums[end]==target){
+         return [start,end];
+        }
+        if(nums[start]+nums[end]>target){
+            end--;
+        }
+        if(nums[start]+nums[end]<target){
+            start++;
+        }
+    }
+};
+```
+
