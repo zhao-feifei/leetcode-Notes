@@ -92,4 +92,4 @@ var climbStairs = function(n) {
 
 206.反转链表
 
-112.路径总和
+112.路径总 和
