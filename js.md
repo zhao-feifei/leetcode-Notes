@@ -93,3 +93,25 @@ var climbStairs = function(n) {
 206.反转链表
 
 112.路径总 和
+
+704.二分查找
+
+```javascript
+var search = function (nums, target) {
+        let start = 0;
+        let end = nums.length - 1;
+        while (start <= end) {
+            let mid = Math.floor((start + end) / 2);
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] > target) {
+                end=mid-1;
+            } else {
+                start=mid+1;
+            }
+        };
+        return -1;
+    }
+
+```
+
