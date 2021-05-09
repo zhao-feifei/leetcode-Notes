@@ -115,3 +115,57 @@ var search = function (nums, target) {
 
 ```
 
+20.有效的括号
+
+```
+var isValid = function(s) {
+    if (s.length % 2) {
+        return false
+    }
+    let arr = [];
+    for (let i = 0; i < s.length; i++) {
+        letter = s[i];
+        switch (letter) {
+            case "(":
+                {
+                    arr.push(letter);
+                    break;
+                }
+            case "{":
+                {
+                    arr.push(letter);
+                    break;
+                }
+            case "[":
+                {
+                    arr.push(letter);
+                    break;
+                }
+            case ")":
+                {
+                    if (arr.pop() !== "(") {
+                        return false;
+                    }
+                    break;
+                }
+            case "}":
+                {
+                    if (arr.pop() !== "{") {
+                        return false;
+                    }
+                    break;
+                }
+            case "]":
+                {
+                    if (arr.pop() !== "[") {
+                        return false;
+                    }
+                    break;
+                }
+        }
+
+    }
+    return !arr.length;
+}
+```
+
