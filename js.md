@@ -117,7 +117,7 @@ var search = function (nums, target) {
 
 20.有效的括号
 
-```
+```javascript
 var isValid = function(s) {
     if (s.length % 2) {
         return false
@@ -167,5 +167,20 @@ var isValid = function(s) {
     }
     return !arr.length;
 }
+```
+
+104.二叉树的最大深度
+
+```javascript
+var maxDepth = function(root) {
+    if(!root){
+        return 0;
+    }else{
+        const left=maxDepth(root.left);
+        const right=maxDepth(root.right)
+        return Math.max(left,right)+1;
+    }
+    
+};
 ```
 
