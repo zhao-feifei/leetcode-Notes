@@ -184,3 +184,23 @@ var maxDepth = function(root) {
 };
 ```
 
+141.环形链表
+
+```javascript
+var hasCycle=function(head){
+    let fast=head;
+    let slow=head;
+    while(fast){
+        if(fast.next==null){
+            return false;
+        }
+            slow=slow.next;
+            fast=fast.next.next;
+            if(fast==slow){
+                return true;
+        }
+    }
+    return false;
+}
+```
+
