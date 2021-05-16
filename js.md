@@ -220,3 +220,21 @@ var getKthFromEnd = function(head, k) {
 };
 ```
 
+94.二叉树的中序遍历
+
+```javascript
+var inorderTraversal = function(root) {
+    let res=[];
+    let inOrder=function(node){
+        if(!node){
+            return null;
+        }
+        inOrder(node.left);
+        res.push(node.val);
+        inOrder(node.right);
+    }
+    inOrder(root);
+    return res;
+};
+```
+
