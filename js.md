@@ -1,6 +1,6 @@
 ## 容易
 
-415.字符串 相加
+#### 415.字符串 相加
 
 ``` javascript
 var addStrings = function (num1, num2) {
@@ -21,9 +21,7 @@ var addStrings = function (num1, num2) {
 };
 ```
 
-
-
-88.合并两个有序数组
+#### 88.合并两个有序数组
 
 ``` javascript
 var merge = function(nums1, m, nums2, n) {
@@ -55,7 +53,7 @@ var merge = function(nums1, m, nums2, n) {
 };
 ```
 
-1.两数之和
+#### 1.两数之和
 
 ``` javascript
 var twoSum = function(nums, target) {
@@ -75,7 +73,7 @@ var twoSum = function(nums, target) {
 };
 ```
 
-70.爬楼梯
+#### 70.爬楼梯
 
 ``` javascript
 var climbStairs = function(n) {
@@ -90,11 +88,11 @@ var climbStairs = function(n) {
 };
 ```
 
-206.反转链表
+#### 206.反转链表
 
-112.路径总 和
+#### 112.路径总 和
 
-704.二分查找
+#### 704.二分查找
 
 ```javascript
 var search = function (nums, target) {
@@ -115,7 +113,7 @@ var search = function (nums, target) {
 
 ```
 
-20.有效的括号
+#### 20.有效的括号
 
 ```javascript
 var isValid = function(s) {
@@ -169,7 +167,7 @@ var isValid = function(s) {
 }
 ```
 
-104.二叉树的最大深度
+#### 104.二叉树的最大深度
 
 ```javascript
 var maxDepth = function(root) {
@@ -184,7 +182,7 @@ var maxDepth = function(root) {
 };
 ```
 
-141.环形链表
+#### 141.环形链表
 
 ```javascript
 var hasCycle=function(head){
@@ -204,7 +202,7 @@ var hasCycle=function(head){
 }
 ```
 
-剑指offer  链表中倒数第K个节点
+#### 剑指offer  链表中倒数第K个节点
 
 ```javascript
 var getKthFromEnd = function(head, k) {
@@ -220,7 +218,7 @@ var getKthFromEnd = function(head, k) {
 };
 ```
 
-94.二叉树的中序遍历
+#### 94.二叉树的中序遍历
 
 ```javascript
 var inorderTraversal = function(root) {
@@ -235,6 +233,27 @@ var inorderTraversal = function(root) {
     }
     inOrder(root);
     return res;
+};
+```
+
+#### 合并两个有序链表
+
+```javascript
+var mergeTwoLists = function(l1, l2) {
+    if(l1==null){
+        return l2;
+    }
+    else if(l2==null){
+        return l1;
+    }
+    else if(l1.val<l2.val){
+        l1.next=mergeTwoLists(l1.next,l2);
+        return l1;
+    }
+    else{
+        l2.next=mergeTwoLists(l1,l2.next);
+        return l2;
+    }
 };
 ```
 
