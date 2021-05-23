@@ -236,7 +236,7 @@ var inorderTraversal = function(root) {
 };
 ```
 
-#### 合并两个有序链表
+### 21.合并两个有序链表
 
 ```javascript
 var mergeTwoLists = function(l1, l2) {
