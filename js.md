@@ -257,3 +257,19 @@ var mergeTwoLists = function(l1, l2) {
 };
 ```
 
+#### 121.买卖股票最佳时机
+
+```javascript
+var maxProfit = function(prices) {
+    let min=prices[0],max=0;
+    for(let i=0;i<prices.length;i++){
+        if(prices[i]<min){
+            min=prices[i];
+            continue;
+        }
+        max=Math.max(prices[i]-min,max)
+    }
+    return max;
+};
+```
+
