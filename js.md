@@ -236,7 +236,7 @@ var inorderTraversal = function(root) {
 };
 ```
 
-### 21.合并两个有序链表
+#### 21.合并两个有序链表
 
 ```javascript
 var mergeTwoLists = function(l1, l2) {
@@ -257,7 +257,7 @@ var mergeTwoLists = function(l1, l2) {
 };
 ```
 
-#### 121.买卖股票最佳时机
+#### 121买卖股票最佳时机
 
 ```javascript
 var maxProfit = function(prices) {
@@ -272,4 +272,21 @@ var maxProfit = function(prices) {
     return max;
 };
 ```
+
+#### 160.相交链表
+
+```javascript
+var getIntersectionNode = function (headA, headB) {
+    if(!headA||!headB) return null;
+    let PA=headA,PB=headB;
+    while(PA!=PB){
+        PA=PA==null?headA:PA.next;
+        PB=PB==null?headB:PB.next;
+    }
+    return PA;
+
+}
+```
+
+
 
