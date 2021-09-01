@@ -313,3 +313,33 @@ var intersection = function (nums1, nums2) {
 
 
 
+#### 54.螺旋矩阵
+
+```javascript
+var spiralOrder = function(matrix) {
+    let res=[];
+    flag=true;
+    while(matrix.length){
+        if(flag){
+            //放进第一行   注意这里需要拼接而不是直接调用，否则覆盖之前的
+            res=res.concat(matrix.shift());
+            // 放进最后一列
+            for(let i=0;i<matrix.length;i++){
+                matrix[i].length&&res.push(matrix[i].pop());
+            }
+        }else{
+            //最后一行
+            res=res.concat(matrix.pop().reverse());
+            //第一列
+            for(let i=matrix.length-1;i>0;i--){
+                matrix[i].length&&res.push(matrix[i].shift());
+            }
+        }
+        flag=!flag;
+    }
+    return res;
+};
+```
+
+
+
