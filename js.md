@@ -343,9 +343,21 @@ var spiralOrder = function(matrix) {
 
 
 
-#### 
+#### 209.长度最小的子数组
 
 ```javascript
-
+var minSubArrayLen = function (target, nums) {
+    let i=0,j=0,len=Infinity,sum=0;
+    while(j<nums.length){
+        sum+=nums[j];
+        while(sum>=target){
+            len=Math.min(len,j-i+1);
+            sum-=nums[i];
+            i++;
+        }
+        j++;
+    }
+    return len==Infinity?0:len;
+};
 ```
 
