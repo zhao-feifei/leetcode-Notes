@@ -381,3 +381,21 @@ var findLength = function (nums1, nums2) {
 };
 ```
 
+#### 144.二叉树的前序遍历
+
+```javascript
+var preorderTraversal = function (root) {
+    let res=[];
+    function preOrderTraversal(node){
+        if(!node){
+            return;
+        }
+        res.push(node.val);
+        preOrderTraversal(node.left);
+        preOrderTraversal(node.right);
+    }
+    preOrderTraversal(root);
+    return res;
+};
+```
+
