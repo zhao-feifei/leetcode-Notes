@@ -480,3 +480,20 @@ var minSubArrayLen = function (target, nums) {
 
 
 
+#### 384.打乱数组
+
+```javascript
+Solution.prototype.shuffle = function() {
+    const nums=this.nums.slice(0);
+    let n=nums.length;
+    for(let i=0;i<n;i++){
+        const rand=randOne(i,n-1);
+        [nums[i],nums[rand]]=[nums[rand],nums[i]];
+    }
+    return nums;
+};
+function randOne(n, m) {//获取随机数的函数
+    return Math.floor(Math.random() * (m - n + 1)) + n;
+};
+```
+
