@@ -512,3 +512,25 @@ var buildTree = function (preorder, inorder) {
 
 
 
+#### 22.括号生成
+
+```javascript
+var generateParenthesis = function (n) {
+    const res = [];
+    const dfs = (l, r, str) => {
+        if (str.length == 2 * n) {
+            res.push(str);
+            return;
+        }
+        if (l > 0) {
+            dfs(l - 1, r, str + "(");
+        }
+        if (r > l) {
+            dfs(l, r - 1, str + ")");
+        }
+    }
+    dfs(n, n, "");
+    return res;
+};
+```
+
