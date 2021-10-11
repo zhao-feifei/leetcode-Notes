@@ -534,3 +534,26 @@ var generateParenthesis = function (n) {
 };
 ```
 
+#### 199.二叉树的右视图
+
+```javascript
+var rightSideView = function (root) {
+    if (!root) return [];
+    let res = [];
+    dfs(root,0,res );
+
+    function dfs(node, step, arr) {
+        if (node) {
+            if (step === arr.length) {
+                arr.push(node.val);
+            }
+            dfs(node.right, step + 1, arr);
+            dfs(node.left, step + 1, arr);
+        }
+    }
+    return res;
+};
+```
+
+
+
