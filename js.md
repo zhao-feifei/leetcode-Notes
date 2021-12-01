@@ -15,6 +15,37 @@ var twoSum = function (nums, target) {
 }
 ```
 
+#### 三数之和
+
+```javascript
+var threeSum = function(nums) {
+    let res=[];
+    const len=nums.length;
+    if(nums==null||len<3) return res;
+    nums.sort((a,b)=>a-b);
+    for(let i=0;i<len;i++){
+        if(nums[i]>0) break;
+        if(i>0&&nums[i]==nums[i-1]) continue;
+        let L=i+1;
+        let R=len-1;
+        while(L<R){
+            const sum=nums[i]+nums[L]+nums[R];
+            if(sum==0){
+                res.push([nums[i],nums[L],nums[R]]);
+                while(L<R&&nums[L]==nums[L+1]) L++;
+                while(L<R&&nums[R]==nums[R-1]) R--;
+                L++;
+                R--;
+            }
+            else if(sum>0) R--;
+            else if(sum<0) L++;
+        }
+    }
+    return res;
+};
+
+```
+
 
 
 
@@ -47,11 +78,332 @@ const merge = (nums1, m, nums2, n) => {
 }
 ```
 
+## 2.最值系列
+
+#### 最大子序和
+
+```javascript
+var maxSubArray = function (nums) {
+    let ans=nums[0];
+    let sum=0;
+    for(let num of nums){
+        if(sum>0){
+            sum+=num;
+        }else{
+            sum=num;
+        }
+         ans = Math.max(sum, ans)
+    }
+    return ans;
+};
+```
+
+#### 数组中的第K个最大元素
+
+```javascript
+const findKthLargest = (nums, k) => {
+  const n = nums.length;
+
+  const quick = (l, r) => {
+    if (l > r) return;
+    let random = Math.floor(Math.random() * (r - l + 1)) + l; // 随机选取一个index
+    swap(nums, random, r); // 将它和位置r的元素交换，让 nums[r] 作为 pivot 元素
+    /**
+     * 我们选定一个 pivot 元素，根据它进行 partition
+     * partition 找出一个位置：它左边的元素都比pivot小，右边的元素都比pivot大
+     * 左边和右边的元素的是未排序的，但 pivotIndex 是确定下来的
+    */
+    let pivotIndex = partition(nums, l, r);
+    /**
+     * 我们希望这个 pivotIndex 正好是 n-k
+     * 如果 n - k 小于 pivotIndex，则在 pivotIndex 的左边继续找
+     * 如果 n - k 大于 pivotIndex，则在 pivotIndex 的右边继续找
+     */
+    if (n - k < pivotIndex) { 
+      quick(l, pivotIndex - 1);
+    } else {
+      quick(pivotIndex + 1, r);
+    }
+    /**
+     * n - k == pivotIndex ，此时 nums 数组被 n-k 分成两部分
+     * 左边元素比 nums[n-k] 小，右边比 nums[n-k] 大，因此 nums[n-k] 就是第K大的元素
+     */
+  };
+
+  quick(0, n - 1); // 让n-k位置的左边都比 nums[n-k] 小，右边都比 nums[n-k] 大
+  return nums[n - k]; 
+};
+
+```
+
+#### 长度最小的子数组
+
+```javascript
+var minSubArrayLen = function (target, nums) {
+  let len = Infinity,
+    i = 0,
+    j = 0,
+    sum = 0
+  while (j < nums.length) {
+    sum += nums[j]
+    while (sum >= target) {
+      len = Math.min(len, j - i + 1)
+      sum -= nums[i]
+      i++
+    }
+    j++
+  }
+  return len == Infinity ? 0 : len
+}
+```
+
+
+
+## 3.矩阵
+
+#### 螺旋矩阵
+
+```javascript
+var spiralOrder = function(matrix) {
+    let res=[];
+    flag=true;
+    while(matrix.length){
+        if(flag){
+            //放进第一行   注意这里需要拼接而不是直接调用，否则覆盖之前的
+            res=res.concat(matrix.shift());
+            // 放进最后一列
+            for(let i=0;i<matrix.length;i++){
+                matrix[i].length&&res.push(matrix[i].pop());
+            }
+        }else{
+            //最后一行
+            res=res.concat(matrix.pop().reverse());
+            //第一列
+            for(let i=matrix.length-1;i>0;i--){
+                matrix[i].length&&res.push(matrix[i].shift());
+            }
+        }
+        flag=!flag;
+    }
+    return res;
+};
+```
+
+#### 岛屿数量
+
+```
+```
+
+#### 岛屿最大面积
+
+```
+```
+
+
+
+## 4.数组中的查找
+
+#### 二分查找
+
+```javascript
+var search = function (nums, target) {
+  let start = 0
+  end = nums.length - 1
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2)
+    if (nums[mid] < target) {
+      start = mid + 1
+    } else if (nums[mid] > target) {
+      end = mid - 1
+    } else {
+      return mid
+    }
+  }
+  return -1
+}
+```
+
+
+
+## 5.栈和队列
+
+#### 有效的括号
+
+```javascript
+var isValid = function (s) {
+  if (s.length % 2 !== 0) {
+    return false
+  }
+  let arr = []
+  for (let i = 0; i < s.length; i++) {
+    switch (s[i]) {
+      case '(': {
+        arr.push('(')
+        break
+      }
+      case '{': {
+        arr.push('{')
+        break
+      }
+      case '[': {
+        arr.push('[')
+        break
+      }
+      case ']': {
+        if (arr.pop() !== '[') {
+          return false
+        }
+        break
+      }
+      case ')': {
+        if (arr.pop() !== '(') {
+          return false
+        }
+        break
+      }
+      case '}': {
+        if (arr.pop() !== '{') {
+          return false
+        }
+        break
+      }
+    }
+  }
+  return !arr.length
+}
+```
+
+#### 最小栈
+
+```javascript
+var MinStack = function () {
+    this.xStack=[];
+    this.minStack=[Infinity];
+};
+
+/** 
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function (val) {
+    this.xStack.push(val);
+    this.minStack.push(Math.min(this.minStack[this.minStack.length-1],val));
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function () { 
+    this.xStack.pop();
+    this.minStack.pop();
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function () {
+    return this.xStack[this.xStack.length-1];
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function () {
+    return this.minStack[this.minStack.length - 1]
+};
+```
+
+
+
+## 6.其他
+
+#### 合并区间
+
+```javascript
+var merge = function (intervals) {
+  let res = []
+  intervals.sort((a, b) => a[0] - b[0])
+  let pre = intervals[0]
+  for (let i = 1; i < intervals.length; i++) {
+    let cur = intervals[i]
+    if (pre[1] >= cur[0]) {
+      pre[1] = Math.max(cur[1], pre[1])
+    } else {
+      res.push(pre)
+      pre = cur
+    }
+  }
+  res.push(pre)
+  return res
+}
+```
+
+#### 接雨水
+
+```javascript
+function trap(height) {
+    let left = 0,
+        right = height.length - 1,
+        leftMax = 0,
+        rightMax = 0,
+        ans = 0;
+    while (left < right) {
+        leftMax = Math.max(leftMax, height[left]);
+        rightMax = Math.max(rightMax, height[right]);
+        if (leftMax < rightMax) {
+            ans += leftMax - height[left];
+            left++;
+        } else {
+            ans += rightMax - height[right];
+            right--;
+        }
+    }
+    return ans;
+}
+```
+
 
 
 # 二.链表
 
 ## 1.判断链表类
+
+#### 判断链表是否有环
+
+```javascript
+var hasCycle = function (head) {
+  let fast = head
+  let slow = head
+  while (fast) {
+    if (fast.next == null) return false
+    fast = fast.next.next
+    slow = slow.next
+    if (fast == slow) {
+      return true
+    }
+  }
+  return false
+}
+```
+
+#### 相交链表
+
+```javascript
+var getIntersectionNode = function(headA, headB) {
+    if(!headA||!headB){
+        return null
+    }
+    let PA=headA
+    let PB=headB
+    while(PA!=PB){
+        PA=PA==null?headA:PA.next
+         PB=PB==null?headB:PB.next
+    }
+    return PA
+};
+```
+
+
 
 ## 2.链表移动类
 
@@ -71,9 +423,48 @@ var reverseList = function (head) {
 }
 ```
 
+#### 合并两个有序链表
+
+```javascript
+var mergeTwoLists = function (l1, l2) {
+  if (l1 == null) {
+    return l2
+  } else if (l2 == null) {
+    return l1
+  } else if (l1.val < l2.val) {
+    l1.next = mergeTwoLists(l1.next, l2)
+    return l1
+  } else {
+    l2.next = mergeTwoLists(l1, l2.next)
+    return l2
+  }
+}
+```
+
 
 
 ## 3.链表删除类
+
+#### 删除链表的倒数第K个节点
+
+```javascript
+//另一道题，返回倒数第K个节点
+var getKthFromEnd = function (head, k) {
+  let p = head,
+    q = head,
+    i = 0
+  while (p) {
+    if (i >= k) {
+      q = q.next
+    }
+    p = p.next
+    i++
+  }
+  return i >= k ? q : null
+}
+```
+
+
 
 ## 4.其他
 
@@ -136,6 +527,8 @@ var compareVersion = function (version1, version2) {
 
 ## 2.最长系列
 
+#### 无重复字符的最长字串
+
 ```javascript
 var lengthOfLongestSubstring = function (s) {
   let max = 0
@@ -152,11 +545,415 @@ var lengthOfLongestSubstring = function (s) {
 }
 ```
 
+#### 最长回文子串
+
+```javascript
+ var longestPalindrome = function (s) {
+       if (s.length < 2) {
+           return s
+       }
+       let res = ''
+       for (let i = 0; i < s.length; i++) {
+           // 回文子串长度是奇数
+           helper(i, i)
+           // 回文子串长度是偶数
+           helper(i, i + 1)
+       }
+
+       function helper(m, n) {
+           while (m >= 0 && n < s.length && s[m] == s[n]) {
+               m--
+               n++
+           }
+           // 注意此处m,n的值循环完后  是恰好不满足循环条件的时刻
+           // 此时m到n的距离为n-m+1，但是mn两个边界不能取 所以应该取m+1到n-1的区间  长度是n-m-1
+           if (n - m - 1 > res.length) {
+               // slice也要取[m+1,n-1]这个区间 
+               res = s.slice(m + 1, n)
+           }
+       }
+       return res
+   };
+```
+
+## 3.翻转系列
+
+#### 翻转字符串里的单词
+
+```javascript
+var reverseWords = function (s) {
+
+    let r = s.length - 1, l = r, res = "";
+    while (l >= 0) {
+        //先找到单词的尾部
+        while (s[r] === " ") {
+            r--;
+        }
+        l = r;
+
+        //给上次单词加空格，排除第一次
+        if (l >= 0 && res) {
+            res += " ";
+        }
+
+        //再找到单词的头部
+        while (s[l] && s[l] !== " ") {
+            l--;
+        }
+
+        //遍历单词并添加
+        for (let i = l + 1, j = r; i <= j; i++) {
+            res += s[i];
+        }
+
+        //跳到下一个单词
+        r = l;
+    }
+
+    return res;
+};
+
+```
+
 
 
 # 四.二叉树
 
+## 1.二叉树遍历
+
+#### 前序遍历
+
+```javascript
+var preorderTraversal = function (root) {
+  let res = []
+  function preOrderTraversal(node) {
+    if (!node) {
+      return
+    }
+    res.push(node.val)
+    preOrderTraversal(node.left)
+    preOrderTraversal(node.right)
+  }
+  preOrderTraversal(root)
+  return res
+}
+
+```
+
+
+
+#### 中序遍历
+
+```javascript
+var inorderTraversal = function (root) {
+  let res = []
+  const insOrder = (root) => {
+    if (!root) return
+    insOrder(root.left)
+    res.push(root.val)
+    insOrder(root.right)
+  }
+  insOrder(root)
+  return res
+}
+```
+
+
+
+## 2.二叉树路径
+
+#### 路径总和
+
+```javascript
+var hasPathSum = function (root, targetSum) {
+  if (!root) {
+    return false
+  }
+  if (!root.left && !root.right) {
+    return targetSum - root.val == 0
+  }
+  return hasPathSum(root.left,targetSum-root.val) || hasPathSum(root.right,targetSum-root.val)
+}
+```
+
+#### 求根节点到叶节点数字之和
+
+```javascript
+var sumNumbers = function (root) {
+  const dfs = (root, preNum) => {
+    if (!root) return 0
+    let sum = preNum * 10 + root.val
+    if (!root.left && !root.right) {
+      return sum
+    } else {
+      return dfs(root.left, sum) + dfs(root.right, sum)
+    }
+  }
+
+  return dfs(root, 0)
+}
+```
+
+## 3.二叉树层序遍历
+
+#### 层序遍历
+
+```javascript
+var levelOrder = function (root) {
+  if (!root) return []
+  let queue = [root]
+  let res = []
+  while (queue.length > 0) {
+    let arr = []
+    let len = queue.length
+    while (len--) {
+      let node = queue.shift()
+      arr.push(node.val)
+      if (node.left) queue.push(node.left)
+      if (node.right) queue.push(node.right)
+    }
+    res.push(arr)
+  }
+  return res
+}
+```
+
+#### 二叉树锯齿形层序遍历
+
+```javascript
+var zigzagLevelOrder = function (root) {
+    const res=[];
+    if(!root){
+        return res;
+    }
+    let curLevel=[root];
+    while (curLevel.length){
+        let curLevelVal=[];
+        let nextLevel=[];
+        for(const node of curLevel){
+            curLevelVal.push(node.val);
+            node.left && nextLevel.push(node.left);
+            node.right && nextLevel.push(node.right);
+        }
+        res.push(curLevelVal);
+         res.length % 2 == 0 && curLevelVal.reverse();//注意这里为啥放在后面
+ 
+        curLevel=nextLevel;
+    }
+    return res;
+};
+
+```
+
+
+
+## 4.二叉树的递归
+
+#### 二叉树的最大深度
+
+```javascript
+var maxDepth = function (root) {
+  if (!root) {
+    return 0
+  } else {
+    let left = maxDepth(root.left)
+    let right = maxDepth(root.right)
+    return Math.max(left, right) + 1
+  }
+}
+```
+
+#### 通过前序与中序遍历序列构造二叉树
+
+```javascript
+var buildTree = function (preorder, inorder) {
+     if(preorder.length==0) return null;
+     let root=new TreeNode(preorder[0]);
+     let mid=inorder.indexOf(preorder[0]);
+      root.left = buildTree(preorder.slice(1, mid + 1), inorder.slice(0, mid));
+     root.right = buildTree(preorder.slice(mid + 1), inorder.slice(mid + 1));
+     return root;
+ };
+```
+
+#### 二叉树的右视图
+
+```javascript
+var rightSideView = function (root) {
+  let res = []
+  if (!root) {
+    return []
+  }
+  function dfs(node, step, arr) {
+    if (node) {
+      if (arr.length == step) {
+        arr.push(node.val)
+      }
+      dfs(node.right, step + 1, arr)
+      dfs(node.left, step + 1, arr)
+    }
+  }
+  dfs(root, 0, res)
+  return res
+}
+
+```
+
+#### 翻转二叉树
+
+```javascript
+var invertTree = function (root) {
+  if (!root) {
+    return null
+  }
+  const right = invertTree(root.right)
+  const left = invertTree(root.left)
+  root.right = left
+  root.left = right
+  return root
+}
+```
+
+
+
 # 五.动态规划
+
+## 1.子序问题
+
+#### 最长上升子序列
+
+```javascript
+var lengthOfLIS = function (nums) {
+  let len = nums.length
+  if (!len) return 0
+  let dp = new Array(len).fill(1)
+  for (let i = 1; i < len; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] > nums[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1)
+      }
+    }
+  }
+  return Math.max(...dp)
+}
+```
+
+#### 最长重复子数组
+
+```javascript
+var findLength = function (nums1, nums2) {
+  let m = nums1.length
+  let n = nums2.length
+  let res = 0
+  let dp =  Array.from(new Array(m + 1), () => new Array(n + 1).fill(0))
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (nums1[i - 1] == nums2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1
+      }
+      res = Math.max(res, dp[i][j])
+    }
+  }
+  return res
+}
+```
+
+
+
+#### 爬楼梯
+
+```javascript
+var climbStairs = function (n) {
+  let dp = []
+  dp[1] = 1
+  dp[2] = 2
+  for (let i = 3; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2]
+  }
+  return dp[n]
+}
+```
+
+## 2.金钱问题
+
+#### 买卖股票的最佳时机
+
+```javascript
+var maxProfit = function (prices) {
+  let min = prices[0]
+  max = 0
+  for (let i = 1; i < prices.length; i++) {
+    if (prices[i] < min) {
+      min = prices[i]
+      continue
+    }
+    max = Math.max(max, prices[i] - min)
+  }
+  return max
+}
+```
+
+#### 零钱兑换
+
+```javascript
+var coinChange = function (coins, amount) {
+  let dp = new Array(amount+1).fill(Infinity)
+  dp[0] = 0
+  for (let i = 1; i <= amount; i++) {
+    for (let coin of coins) {
+      if (coin <= i) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1)
+      }
+    }
+  }
+  return dp[amount] == Infinity ? -1 : dp[amount]
+}
+```
+
+#### 打家劫舍
+
+```javascript
+var rob = function (nums) {
+  let n = nums.length
+  let dp = new Array(n + 1)
+  dp[0] = 0
+  dp[1] = nums[0]
+  for (let i = 2; i <= n; i++) {
+    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i - 1])
+  }
+  return dp[n]
+}
+
+```
+
+
+
+## 3.路径问题
+
+#### 最小路径和
+
+```javascript
+var minPathSum = function (grid) {
+    let m=grid.length;
+    let n=grid[0].length;
+    let dp=Array.from(new Array(m),()=>Array(n).fill(0));
+    dp[0][0]=grid[0][0];
+    for(let i=1;i<m;i++){
+        dp[i][0]=dp[i-1][0]+grid[i][0];
+    }
+    for (let j = 1; j < n; j++) {
+        dp[0][j] = dp[0][j-1] + grid[0][j];
+    }
+    for(let i=1;i<m;i++){
+        for(let j=1;j<n;j++){
+            dp[i][j]=Math.min(dp[i-1][j],dp[i][j-1])+grid[i][j];
+        }
+    }
+    return dp[m-1][n-1];
+};
+```
+
+
 
 # 六.回溯算法
 
@@ -187,6 +984,88 @@ var permute = function (nums) {
   dfs([])
   return res
 }
+```
+
+## 2.字符串
+
+#### 括号生成
+
+```javascript
+var generateParenthesis = function (n) {
+  let res = []
+  function dfs(l, r, str) {
+    if (str.length == 2 * n) {
+      res.push(str)
+      return
+    }
+    if (l > 0) {
+      dfs(l - 1, r, str + '(')
+    }
+    if (r > l) {
+      dfs(l, r - 1, str + ')')
+    }
+  }
+  dfs(n, n, '')
+  return res
+}
+```
+
+#### 复原IP地址
+
+```javascript
+ var restoreIpAddresses = function (s) {
+     let res = [];
+     const dfs = (subRes, start) => {
+         if (subRes.length == 4 && start == s.length) {
+             res.push(subRes.join('.'));
+             return;
+         }
+         if (subRes.length == 4 && start < s.length) return;
+         for (let len = 1; len <= 3; len++) {
+             if (len != 1 && s[start] == '0') return;
+             if (start + len > s.length) return;
+             const str = s.substring(start, start + len);
+             if (len == 3 && +str > 255) return;
+             subRes.push(str);
+             dfs(subRes, start + len);
+             subRes.pop();
+         }
+     }
+     dfs([], 0);
+     return res;
+ };
+```
+
+
+
+# 七.数学
+
+#### 斐波那契数列
+
+```javascript
+var fib = function (n) {
+  let n1 = 0,
+    n2 = 1,
+    sum = 0
+  for (let i = 0; i < n; i++) {
+    sum = (n1 + n2) % 1000000007
+    n1 = n2
+    n2 = sum
+  }
+  return n1
+}
+```
+
+#### 圆圈中最后剩下的数字
+
+```javascript
+var lastRemaining = function(n, m) {
+    let ans=0 //f（1）=0，只有一个
+    for(let i =2;i<=n;i++) {//
+        ans=(ans+m)%i;
+    }
+    return ans;
+};
 ```
 
 
