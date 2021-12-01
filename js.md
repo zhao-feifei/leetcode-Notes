@@ -189,6 +189,26 @@ var spiralOrder = function(matrix) {
 };
 ```
 
+#### 旋转图像
+
+```javascript
+var rotate = function (matrix) {
+    const n = matrix.length;
+    for (let i = 0; i < Math.floor(n / 2); i++) {
+        for (let j = 0; j < n; j++) {
+            [matrix[i][j], matrix[n - i - 1][j]] = [matrix[n - i - 1][j], matrix[i][j]];//注意这里是n-i-1
+        }
+    }
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]]
+        }
+    }
+};
+```
+
+
+
 #### 岛屿数量
 
 ```
@@ -313,6 +333,41 @@ MinStack.prototype.getMin = function () {
 };
 ```
 
+#### 两个栈实现队列
+
+```javascript
+var CQueue = function () {
+  this.stackA = []
+  this.stackB = []
+}
+
+/**
+ * @param {number} value
+ * @return {void}
+ */
+CQueue.prototype.appendTail = function (value) {
+  this.stackA.push(value)
+}
+
+/**
+ * @return {number}
+ */
+CQueue.prototype.deleteHead = function () {
+  if (this.stackB.length) {
+    return this.stackB.pop()
+  } else {
+    while (this.stackA.length) {
+      this.stackB.push(this.stackA.pop())
+    }
+    if (!this.stackB.length) {
+      return -1
+    } else {
+      return this.stackB.pop()
+    }
+  }
+}
+```
+
 
 
 ## 6.其他
@@ -359,6 +414,31 @@ function trap(height) {
         }
     }
     return ans;
+}
+```
+
+#### 两个数组的交集
+
+```javascript
+var intersection = function (nums1, nums2) {
+  nums1.sort((a, b) => a - b)
+  nums2.sort((a, b) => a - b)
+  let res = new Set(),
+    i = 0,
+    j = 0
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      i++
+    } else if (nums1[i] > nums2[j]) {
+      j++
+    } else {
+      res.add(nums1[i])
+      i++
+      j++
+    }
+
+  }
+      return [...res]
 }
 ```
 
@@ -951,6 +1031,26 @@ var minPathSum = function (grid) {
     }
     return dp[m-1][n-1];
 };
+```
+
+#### 不同路径
+
+```javascript
+var uniquePaths = function (m, n) {
+  let dp = Array.from(new Array(m), () => new Array(n).fill(0))
+  for (let i = 0; i < m; i++) {
+    dp[i][0] = 1
+  }
+  for (let i = 0; i < n; i++) {
+    dp[0][i] = 1
+  }
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+    }
+  }
+  return dp[m - 1][n - 1]
+}
 ```
 
 
