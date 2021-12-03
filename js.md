@@ -157,6 +157,19 @@ var minSubArrayLen = function (target, nums) {
 }
 ```
 
+#### 最大数
+
+```javascript
+var largestNumber = function(nums) {
+    nums = nums.sort((a, b) => {
+        let S1 = `${a}${b}`;
+        let S2 = `${b}${a}`;
+        return S2 - S1;
+    });
+    return nums[0] ? nums.join('') : '0';
+};
+```
+
 
 
 ## 3.矩阵
@@ -241,6 +254,24 @@ var search = function (nums, target) {
   }
   return -1
 }
+```
+
+#### 寻找旋转排序数组中的最小值
+
+```javascript
+var findMin = function (nums) {
+    let low=0,high=nums.length-1;
+   
+    while(low<high){
+         let mid = low + Math.floor((high - low) / 2);
+        if(nums[mid]<nums[high]){
+            high=mid;
+        }else{
+            low=mid+1;
+        }
+    }
+    return nums[low];
+};
 ```
 
 
@@ -442,6 +473,23 @@ var intersection = function (nums1, nums2) {
 }
 ```
 
+#### 移动零
+
+```javascript
+var moveZeroes = function (nums) {
+  if (nums == null) return
+  let j = 0
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] != 0) {
+      let temp = nums[i]
+      nums[i] = nums[j]
+      nums[j++] = temp
+    }
+  }
+  return nums
+}
+```
+
 
 
 # 二.链表
@@ -544,6 +592,23 @@ var getKthFromEnd = function (head, k) {
 }
 ```
 
+#### 删除链表倒数第N个节点
+
+```javascript
+var removeNthFromEnd = function (head, n) {
+  let ret = new ListNode(0, head),
+    slow = (fast = ret)
+  while (n--) fast = fast.next
+  if (!fast) return ret.next
+  while (fast.next) {
+    fast = fast.next
+    slow = slow.next
+  }
+  slow.next = slow.next.next
+  return ret.next
+}
+```
+
 
 
 ## 4.其他
@@ -630,6 +695,33 @@ const multiply = (num1, num2) => {
 
 ```
 
+#### 字符串解码
+
+```javascript
+var decodeString = function (s) {
+  let num = 0
+  result = ''
+  numStack = []
+  strStack = []
+  for (const char of s) {
+    if (!isNaN(char)) {
+      num = num * 10 + Number(char)
+    } else if (char == '[') {
+      numStack.push(num)
+      num = 0
+      strStack.push(result)
+      result = ''
+    } else if (char == ']') {
+      let repeatTime = numStack.pop()
+      result = strStack.pop() + result.repeat(repeatTime)
+    } else {
+      result += char
+    }
+  }
+  return result
+}
+```
+
 
 
 ## 2.最长系列
@@ -682,6 +774,49 @@ var lengthOfLongestSubstring = function (s) {
        return res
    };
 ```
+
+#### 最长公共子序列（不用连续）
+
+```javascript
+var longestCommonSubsequence = function (text1, text2) {
+  let m = text1.length,
+    n = text2.length
+  let dp = Array.from(new Array(m + 1), () => new Array(n + 1).fill(0))
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      let c1 = text1[i - 1],
+        c2 = text2[j - 1]
+      if (c1 == c2) {
+        dp[i][j] = dp[i - 1][j - 1] + 1
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+      }
+    }
+  }
+  return dp[m][n]
+}
+```
+
+#### 最长公共前缀
+
+```javascript
+var longestCommonPrefix = function (strs) {
+  if (!strs.length) return ''
+  let res = strs[0]
+  for (let i = 1; i < strs.length; i++) {
+    let j = 0
+    for (; j < res.length && j < strs[i].length; j++) {
+      if (strs[i][j] !== res[j]) {
+        break
+      }
+    }
+    res = res.substr(0, j)
+  }
+  return res
+}
+```
+
+
 
 ## 3.翻转系列
 
@@ -825,6 +960,30 @@ var hasPathSum = function (root, targetSum) {
   return hasPathSum(root.left,targetSum-root.val) || hasPathSum(root.right,targetSum-root.val)
 }
 ```
+
+#### 路径总和2
+
+```javascript
+var pathSum = function (root, targetSum) {
+    let res=[];
+    const dfs=(node,path,sum)=>{
+        if(!node) return;
+        path.push(node.val);
+        sum+=node.val;
+        if(!node.left&&!node.right){
+            if(sum==targetSum){
+                  res.push(path.slice());
+            }
+          
+        }else{
+            dfs(node.left,path,sum);
+            dfs(node.right, path, sum);
+        }
+        path.pop();
+    }
+```
+
+
 
 #### 求根节点到叶节点数字之和
 
@@ -985,6 +1144,23 @@ var invertTree = function (root) {
   root.right = left
   root.left = right
   return root
+}
+```
+
+#### 平衡二叉树
+
+```javascript
+var isBalanced = function (root) {
+  function isBalanced(node) {
+    if (!node) return 0
+    let left = isBalanced(node.left)
+    let right = isBalanced(node.right)
+    if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
+      return -1
+    }
+    return Math.max(left, right) + 1
+  }
+  return isBalanced(root) !== -1
 }
 ```
 
@@ -1179,6 +1355,30 @@ var permute = function (nums) {
   return res
 }
 ```
+
+#### 子集
+
+```javascript
+var subsets = function (nums) {
+    let res=[];
+    const dfs=(index,list)=>{
+        if(index==nums.length){
+            res.push(list.slice());
+            return;
+        }
+        list.push(nums[index]);
+        dfs(index+1,list);
+        list.pop();
+        dfs(index+1,list);
+
+    }
+    dfs(0,[]);
+    return res;
+
+};
+```
+
+
 
 ## 2.字符串
 
