@@ -603,6 +603,33 @@ var compareVersion = function (version1, version2) {
 }
 ```
 
+#### 字符串相乘
+
+```javascript
+const multiply = (num1, num2) => {
+  const len1 = num1.length;
+  const len2 = num2.length;
+  const pos = new Array(len1 + len2).fill(0);
+
+  for (let i = len1 - 1; i >= 0; i--) {
+    const n1 = +num1[i];
+    for (let j = len2 - 1; j >= 0; j--) {
+      const n2 = +num2[j];
+      const multi = n1 * n2;             
+      const sum = pos[i + j + 1] + multi; 
+
+      pos[i + j + 1] = sum % 10;
+      pos[i + j] += sum / 10 | 0;
+    }
+  }
+  while (pos[0] == 0) {
+    pos.shift();
+  }
+  return pos.length ? pos.join('') : '0';
+};
+
+```
+
 
 
 ## 2.最长系列
@@ -738,6 +765,49 @@ var inorderTraversal = function (root) {
 }
 ```
 
+#### 二叉搜索树的第K小元素
+
+```javascript
+var kthSmallest = function (root, k) {
+  let res
+  function findNode(node) {
+    if (node != null && k > 0) {
+      findNode(node.left)
+      if (--k == 0) {
+        res = node.val
+        return res
+      }
+      findNode(node.right)
+    }
+  }
+  findNode(root)
+  return res
+}
+
+```
+
+#### 二叉搜索树的第K大元素
+
+```javascript
+var kthLargest = function (root, k) {
+  let result =null,
+  num = 0;
+  function dfs(node){
+    if(!node) return
+    dfs(node.right)
+    num++;
+    if(num==k){
+      result=node.val
+      return 
+    }
+    dfs(node.left)
+  }
+  dfs(root)
+  return result
+}
+
+```
+
 
 
 ## 2.二叉树路径
@@ -797,6 +867,30 @@ var levelOrder = function (root) {
   return res
 }
 ```
+
+#### N叉树层序遍历
+
+```javascript
+var levelOrder = function (root) {
+    let nums=[];
+    search(nums,root,0);
+    return nums;
+};
+function search(nums,node,k){
+    if(node==null){
+        return;
+    }
+    if(nums[k]==undefined){
+        nums[k]=[];
+    }
+    nums[k].push(node.val)
+    for(let i=0;i<node.children.length;i++){
+        search(nums,node.children[i],k+1)
+    }
+}
+```
+
+
 
 #### 二叉树锯齿形层序遍历
 
