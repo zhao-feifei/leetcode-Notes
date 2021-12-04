@@ -481,7 +481,7 @@ var merge = function (intervals) {
 }
 ```
 
-#### 接雨水
+#### 接雨水 （困难）
 
 ```javascript
 function trap(height) {
@@ -751,6 +751,72 @@ const isPalindrome = (head) => {
 
 ```
 
+#### 反转链表 ||
+
+```javascript
+var reverseBetween = function(head, left, right) {
+     // 1
+     const dummy_node = new ListNode(-1);
+     dummy_node.next = head;
+
+    // 2
+    let pre = dummy_node;
+    for (let i = 0; i < left - 1; ++i) {
+        pre = pre.next;
+    }
+    //  3
+    let cur = pre.next;
+    for (let i = 0; i < right - left; ++i) {
+         const next = cur.next;
+         cur.next = next.next;
+         next.next = pre.next;
+         pre.next = next;
+     }
+     return dummy_node.next;
+};
+
+```
+
+#### K个一组翻转链表 (困难)
+
+```javascript
+const myReverse = (head, tail) => {
+    let prev = tail.next;
+    let p = head;
+    while (prev !== tail) {
+        const nex = p.next;
+        p.next = prev;
+        prev = p;
+        p = nex;
+    }
+    return [tail, head];
+}
+var reverseKGroup = function (head, k) {
+    const hair = new ListNode(0);
+    hair.next = head;
+    let pre = hair;
+
+    while (head) {
+        let tail = pre;
+        // 查看剩余部分长度是否大于等于 k
+        for (let i = 0; i < k; ++i) {
+            tail = tail.next;
+            if (!tail) {
+                return hair.next;
+            }
+        }
+        const nex = tail.next;
+        [head, tail] = myReverse(head, tail);
+        // 把子链表重新接回原链表
+        pre.next = head;
+        tail.next = nex;
+        pre = tail;
+        head = tail.next;
+    }
+    return hair.next;
+};
+```
+
 
 
 ## 3.链表删除类
@@ -962,6 +1028,46 @@ var isAnagram = function(s, t) {
 };
 //Sort不传参时，默认将元素转字符串，按每一个字节的Unicode编码位置值原地排序
 //字符串 → 数组 → 排序 → 比较顺序相同的字符串
+```
+
+#### 判断子序列
+
+```javascript
+const isSubsequence = function (s, t) {
+    if (s.length == 0) return true;
+    let index1 = 0,
+        index2 = 0;
+    while (index2 < t.length) {
+        if (s[index1] == t[index2]) {
+            index1++;
+            if (index1 > s.length - 1) {
+                return true;
+            }
+        }
+        index2++;
+    }
+    return false;
+};
+
+```
+
+#### 二进制求和
+
+```javascript
+var addBinary = function(a, b) {
+    let ans = "";
+    let ca = 0;
+    for(let i = a.length - 1, j = b.length - 1;i >= 0 || j >= 0; i--, j--) {
+        let sum = ca;
+        sum += i >= 0 ? parseInt(a[i]) : 0;
+        sum += j >= 0 ? parseInt(b[j]) : 0;
+        ans += sum % 2;
+        ca = Math.floor(sum / 2);
+    }
+    ans += ca == 1 ? ca : "";
+    return ans.split('').reverse().join('');
+};
+
 ```
 
 
@@ -1320,6 +1426,38 @@ var zigzagLevelOrder = function (root) {
 
 ```
 
+#### 二叉树的层序遍历 ||
+
+```javascript
+const levelOrderBottom = (root) => {
+  if (root == null) {
+    return [];
+  }
+  const queue = [];
+  queue.push(root);
+  const res = [];
+
+  while (queue.length) {
+    const subRes = [];
+    const levelSize = queue.length;
+    for (let i = 0; i < levelSize; i++) {
+      const cur = queue.shift();
+      subRes.push(cur.val);
+      if (cur.left) {
+        queue.push(cur.left);
+      }
+      if (cur.right) {
+        queue.push(cur.right);
+      }
+    }
+    res.unshift(subRes);
+  }
+  return res;
+}
+
+
+```
+
 
 
 ## 4.二叉树的递归
@@ -1434,6 +1572,44 @@ var searchBST = function (root, val) {
     if (root.val == val) return root
    return root.val < val ?  searchBST(root.right, val): searchBST(root.left, val)
 };
+```
+
+#### 对称二叉树
+
+```javascript
+
+var isSymmetric = function (root) {
+    if(root==null) return true;
+    const check=(left,right)=>{
+        if(left==null&&right==null){
+            return true;
+        }
+        if(left&&right){
+            return left.val==right.val&&check(left.left,right.right)&&check(right.left,left.right);
+            //注意理解这里的判断条件，是镜像
+        }
+        return false;
+    }
+   return check(root.left,root.right);
+};
+```
+
+#### 二叉树的直径
+
+```javascript
+var diameterOfBinaryTree = function (root) {
+    let ans=0;
+    function deep(node){
+        if(!node) return 0;
+        let L=deep(node.left);
+        let R=deep(node.right);
+        ans=Math.max(ans,L+R);
+        return Math.max(L,R)+1;
+    }
+    deep(root);
+    return ans;
+};
+
 ```
 
 
@@ -1609,6 +1785,23 @@ var uniquePaths = function (m, n) {
 }
 ```
 
+#### 跳跃游戏
+
+```javascript
+var canJump = function (nums) {
+    let  max=0;
+    for(let i=0;i<nums.length;i++){
+        if(i>max){
+            return false;
+        }
+        max=Math.max(max,i+nums[i]);
+        if(max>=nums.length-1){
+            return true;
+        }
+    }
+};
+```
+
 
 
 # 六.回溯算法
@@ -1664,6 +1857,30 @@ var subsets = function (nums) {
 };
 ```
 
+#### 组合总和
+
+```javascript
+const combinationSum = (candidates, target) => {
+  const res = [];
+  const dfs = (start, temp, sum) => { // start是当前选择的起点索引 temp是当前的集合 sum是当前求和
+    if (sum >= target) {
+      if (sum == target) {
+        res.push(temp.slice()); // temp的拷贝 加入解集
+      }
+      return;   // 结束当前递归
+    }
+    for (let i = start; i < candidates.length; i++) { // 枚举当前可选的数，从start开始
+      temp.push(candidates[i]);          // 选这个数
+      dfs(i, temp, sum + candidates[i]); // 基于此继续选择，传i，下一次就不会选到i左边的数
+      temp.pop();   // 撤销选择，回到选择candidates[i]之前的状态，继续尝试选同层右边的数
+    }
+  };
+  dfs(0, [], 0); // 最开始可选的数是从第0项开始的，传入一个空集合，sum也为0
+  return res;
+};
+
+```
+
 
 
 ## 2.字符串
@@ -1716,6 +1933,27 @@ var generateParenthesis = function (n) {
  };
 ```
 
+#### 字符串的排列
+
+```javascript
+var permutation = function(s) {
+    const res = new Set()
+    const visit = {}
+    function dfs(path) {
+        if(path.length === s.length) return res.add(path)
+        for (let i = 0; i < s.length; i++) {
+            if (visit[i]) continue
+            visit[i] = true
+            dfs(path + s[i])
+            visit[i] = false
+        }
+    }
+    dfs('')
+    return [...res]
+};
+
+```
+
 
 
 # 七.数学
@@ -1746,6 +1984,41 @@ var lastRemaining = function(n, m) {
     }
     return ans;
 };
+```
+
+#### 求平方根
+
+```javascript
+const mySqrt = function(x) {
+     if (x < 2) return x
+     let left = 1, mid, right = Math.floor(x / 2);
+     while (left <= right) {
+        mid = Math.floor(left + (right - left) / 2)
+        if (mid * mid === x) return mid
+        if (mid * mid < x) {
+            left = mid + 1
+        }else {
+            right = mid - 1
+        }
+     }
+     return right
+}
+```
+
+#### Z（N）字形变换  ----- 找规律答案
+
+```javascript
+var convert = function(s, numRows) {
+    if (numRows === 1) return s;
+    const rows = new Array(numRows).fill("");
+    const n = 2 * numRows - 2;
+    for(let i = 0; i < s.length; i++) {
+        const x = i % n;
+        rows[Math.min(x, n - x)] += s[i];
+    }
+    return rows.join("");
+};
+
 ```
 
 
