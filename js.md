@@ -232,6 +232,26 @@ var rotate = function (matrix) {
 ```
 ```
 
+#### 二维数组中的查找
+
+```javascript
+var findNumberIn2DArray = function(matrix, target) {
+    if(!matrix.length) return false;
+    let x=matrix.length-1,y=0;
+    while(x>=0&&y<matrix[0].length){
+        if(matrix[x][y]==target){
+            return true;
+        }
+        else if(matrix[x][y]>target){
+            x--;
+        }else{
+            y++;
+        }
+    }
+    return false;
+};
+```
+
 
 
 ## 4.数组中的查找
@@ -271,6 +291,43 @@ var findMin = function (nums) {
         }
     }
     return nums[low];
+};
+```
+
+#### 在排序数组中查找元素的第一个和最后一个位置
+
+```javascript
+var searchRange = function(nums, target) {
+    let L = 0,
+        R = nums.length - 1;
+    while (nums[L] < target) L++;
+    while (nums[R] > target) R--;
+    let res= R - L < 0 ? 0 : R - L + 1;
+    if(res==0){
+        return[-1,-1];
+    }else{
+        return[L,R];
+    }
+};
+```
+
+#### 多数元素
+
+```javascript
+var majorityElement = function (nums) {
+    let majority = nums[0];
+    let count = 1;
+    for (let i = 1; i < nums.length; i++) {
+        if (count == 0) {
+            majority = nums[i];
+        }
+        if (majority == nums[i]) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+    return majority;
 };
 ```
 
@@ -490,6 +547,64 @@ var moveZeroes = function (nums) {
 }
 ```
 
+#### 矩形重叠
+
+```javascript
+var isRectangleOverlap = function(rec1, rec2) {
+    return !(rec1[2] <= rec2[0] ||   // left
+             rec1[3] <= rec2[1] ||   // bottom
+             rec2[2] <= rec1[0] ||   // right
+             rec2[3] <= rec1[1]);    // top
+}
+
+```
+
+#### 将数组分成和相等的三部分
+
+```javascript
+var canThreePartsEqualSum = function(A) {
+    let sum = A.reduce((acc,cur)=>acc+cur) //sum数组之和
+    let temp = 0   //temp累加
+    let cnt = 0   //cnt计数
+    for(let i=0;i<A.length;i++){
+        temp += A[i] 
+        if(temp == sum/3){  
+            cnt++   
+            temp = 0
+        }
+    }
+    return (sum!=0 && cnt==3)||(sum==0 && cnt>2)
+};
+
+```
+
+#### 下一个排列
+
+```javascript
+function nextPermutation(nums) {
+    let i = nums.length - 2;                   // 向左遍历，i从倒数第二开始是为了nums[i+1]要存在
+    while (i >= 0 && nums[i] >= nums[i + 1]) { // 寻找第一个小于右邻居的数
+        i--;
+    }
+    if (i >= 0) {                             // 这个数在数组中存在，从它身后挑一个数，和它换
+        let j = nums.length - 1;                // 从最后一项，向左遍历
+        while (j >= 0 && nums[j] <= nums[i]) {  // 寻找第一个大于 nums[i] 的数
+            j--;
+        }
+        [nums[i], nums[j]] = [nums[j], nums[i]]; // 两数交换，实现变大
+    }
+    // 如果 i = -1，说明是递减排列，如 3 2 1，没有下一排列，直接翻转为最小排列：1 2 3
+    let l = i + 1;           
+    let r = nums.length - 1;
+    while (l < r) {                            // i 右边的数进行翻转，使得变大的幅度小一些
+        [nums[l], nums[r]] = [nums[r], nums[l]];
+        l++;
+        r--;
+    }
+}
+
+```
+
 
 
 # 二.链表
@@ -569,6 +684,73 @@ var mergeTwoLists = function (l1, l2) {
 }
 ```
 
+#### 两两交换链表中的节点
+
+```javascript
+var swapPairs = function(head) {
+    if (head === null|| head.next === null) {
+        return head;
+    }
+    const newHead = head.next;
+    head.next = swapPairs(newHead.next);
+    newHead.next = head;
+    return newHead;
+};
+
+```
+
+#### 回文链表
+
+```javascript
+//方法1：存入数组后判断数组是否为回文
+var isPalindrome = function(head) {
+        const vals=[];
+        while(head!=null){
+            vals.push(head.val);
+            head=head.next;
+        }
+        for(var i=0,j=vals.length-1;i<j;i++,j--){
+            if(vals[i]!=vals[j]){
+                return false;
+            }
+        }
+        return true;
+};
+//方法二：双指针
+const isPalindrome = (head) => {
+  if (head == null || head.next == null) {
+    return true;
+  }
+  let fast = head;
+  let slow = head;
+  let prev;
+  while (fast && fast.next) {
+    prev = slow;
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+  prev.next = null;  // 断成两个链表
+  // 翻转后半段
+  let head2 = null;
+  while (slow) {
+    const tmp = slow.next;
+    slow.next = head2;
+    head2 = slow;
+    slow = tmp;
+  }
+  // 比对
+  while (head && head2) {
+    if (head.val != head2.val) {
+      return false;
+    }
+    head = head.next;
+    head2 = head2.next;
+  }
+  return true;
+};
+
+```
+
 
 
 ## 3.链表删除类
@@ -612,6 +794,38 @@ var removeNthFromEnd = function (head, n) {
 
 
 ## 4.其他
+
+#### 两数相加
+
+```javascript
+var addTwoNumbers = function (l1, l2) {
+  let head = null
+  tail = null
+  add = 0
+  while (l1 || l2) {
+    let n1 = l1 ? l1.val : 0
+    let n2 = l2 ? l2.val : 0
+    let sum = n1 + n2 + add
+    if (!head) {
+      head = tail = new ListNode(sum % 10)
+    } else {
+      tail.next = new ListNode(sum % 10)
+      tail = tail.next
+    }
+    add = Math.floor(sum / 10)
+    if (l1) {
+      l1 = l1.next
+    }
+    if (l2) {
+      l2 = l2.next
+    }
+    if (add > 0) {
+      tail.next = new ListNode(add)
+    }
+  }
+  return head
+}
+```
 
 
 
@@ -720,6 +934,34 @@ var decodeString = function (s) {
   }
   return result
 }
+```
+
+#### 回文数
+
+```javascript
+var isPalindrome = function(x) {
+    let str = x.toString();
+    let n = str.length;
+    let left = 0;
+    let right = n-1;
+    while(left < right){
+        if(str[left++] != str[right--]){
+            return false;
+        }
+    }
+    return true;
+}
+
+```
+
+#### 有效的字母异位词
+
+```javascript
+var isAnagram = function(s, t) {
+    return s.split('').sort().join('') === t.split('').sort().join('')
+};
+//Sort不传参时，默认将元素转字符串，按每一个字节的Unicode编码位置值原地排序
+//字符串 → 数组 → 排序 → 比较顺序相同的字符串
 ```
 
 
@@ -1164,6 +1406,36 @@ var isBalanced = function (root) {
 }
 ```
 
+#### 二叉树的最近公共祖先
+
+```javascript
+const lowestCommonAncestor = (root, p, q) => {
+    if (!root) return null;
+    if (root == p || root == q) {
+        return root;
+    }
+    const left = lowestCommonAncestor(root.left, p, q);
+    const right = lowestCommonAncestor(root.right, p, q);
+    if (left && right){
+        return root;
+    }
+    if(left==null){
+        return right;
+    }
+    return left;
+};
+```
+
+#### 二叉搜索树中的搜索
+
+```javascript
+var searchBST = function (root, val) {
+    if (root == null) return root
+    if (root.val == val) return root
+   return root.val < val ?  searchBST(root.right, val): searchBST(root.left, val)
+};
+```
+
 
 
 # 五.动态规划
@@ -1242,6 +1514,20 @@ var maxProfit = function (prices) {
   return max
 }
 ```
+
+#### 买卖股票的最佳时机 ||
+
+```javascript
+var maxProfit = function(prices) {
+    let max=0,n=prices.length;
+    for(let i=0;i<n-1;i++){
+        max+=Math.max(0,prices[i+1]-prices[i])
+    }   
+    return max;
+};
+```
+
+
 
 #### 零钱兑换
 
