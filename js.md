@@ -1,3 +1,9 @@
+### 备注
+
+不熟的题： 1.数组中的第K个最大元素  用大顶堆解法
+
+​					2.字符串相乘
+
 # 一.数组
 
 ## 1. n数之和
@@ -5,14 +11,19 @@
 #### 两数之和
 
 ```javascript
-var twoSum = function (nums, target) {
-  for (let i = 0; i < nums.length; i++) {
-    let k = target - nums[i]
-    for (let j = i + 1; j < nums.length; j++) {
-      if (nums[j] == k) return [i, j]
+
+var twoSum = function(nums, target) {
+    let map = new Map();
+    for(let i = 0, len = nums.length; i < len; i++){
+        if(map.has(target - nums[i])){
+            return [map.get(target - nums[i]), i];
+        }else{
+            map.set(nums[i], i);
+        }
     }
-  }
-}
+    return [];
+};
+
 ```
 
 #### 三数之和
@@ -80,7 +91,13 @@ const merge = (nums1, m, nums2, n) => {
 
 ## 2.最值系列
 
-#### 最大子序和
+#### 
+
+```javascript
+
+```
+
+#### 最大子数组和
 
 ```javascript
 var maxSubArray = function (nums) {
@@ -96,42 +113,54 @@ var maxSubArray = function (nums) {
     }
     return ans;
 };
+
 ```
+
+
 
 #### 数组中的第K个最大元素
 
 ```javascript
-const findKthLargest = (nums, k) => {
-  const n = nums.length;
-
-  const quick = (l, r) => {
-    if (l > r) return;
-    let random = Math.floor(Math.random() * (r - l + 1)) + l; // 随机选取一个index
-    swap(nums, random, r); // 将它和位置r的元素交换，让 nums[r] 作为 pivot 元素
-    /**
-     * 我们选定一个 pivot 元素，根据它进行 partition
-     * partition 找出一个位置：它左边的元素都比pivot小，右边的元素都比pivot大
-     * 左边和右边的元素的是未排序的，但 pivotIndex 是确定下来的
-    */
-    let pivotIndex = partition(nums, l, r);
-    /**
-     * 我们希望这个 pivotIndex 正好是 n-k
-     * 如果 n - k 小于 pivotIndex，则在 pivotIndex 的左边继续找
-     * 如果 n - k 大于 pivotIndex，则在 pivotIndex 的右边继续找
-     */
-    if (n - k < pivotIndex) { 
-      quick(l, pivotIndex - 1);
-    } else {
-      quick(pivotIndex + 1, r);
+ // 整个流程就是上浮下沉
+var findKthLargest = function(nums, k) {
+   let heapSize=nums.length
+    buildMaxHeap(nums,heapSize) // 构建好了一个大顶堆
+    // 进行下沉 大顶堆是最大元素下沉到末尾
+    for(let i=nums.length-1;i>=nums.length-k+1;i--){
+        swap(nums,0,i)
+        --heapSize // 下沉后的元素不参与到大顶堆的调整
+        // 重新调整大顶堆
+         maxHeapify(nums, 0, heapSize);
     }
-    /**
-     * n - k == pivotIndex ，此时 nums 数组被 n-k 分成两部分
-     * 左边元素比 nums[n-k] 小，右边比 nums[n-k] 大，因此 nums[n-k] 就是第K大的元素
-     */
-  };
-
-  quick(0, n - 1); // 让n-k位置的左边都比 nums[n-k] 小，右边都比 nums[n-k] 大
-  return nums[n - k]; 
+    return nums[0]
+   // 自下而上构建一颗大顶堆
+   function buildMaxHeap(nums,heapSize){
+     for(let i=Math.floor(heapSize/2)-1;i>=0;i--){
+        maxHeapify(nums,i,heapSize)
+     }
+   }
+   // 从左向右，自上而下的调整节点
+   function maxHeapify(nums,i,heapSize){
+       let l=i*2+1
+       let r=i*2+2
+       let largest=i
+       if(l < heapSize && nums[l] > nums[largest]){
+           largest=l
+       }
+       if(r < heapSize && nums[r] > nums[largest]){
+           largest=r
+       }
+       if(largest!==i){
+           swap(nums,i,largest) // 进行节点调整
+           // 继续调整下面的非叶子节点
+           maxHeapify(nums,largest,heapSize)
+       }
+   }
+   function swap(a,  i,  j){
+        let temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+   }
 };
 
 ```
@@ -139,16 +168,17 @@ const findKthLargest = (nums, k) => {
 #### 长度最小的子数组
 
 ```javascript
+//滑动窗口思想，如果和大了则收缩窗口，反之扩张
 var minSubArrayLen = function (target, nums) {
   let len = Infinity,
     i = 0,
     j = 0,
     sum = 0
-  while (j < nums.length) {
+  while (j < nums.length) { 
     sum += nums[j]
-    while (sum >= target) {
+    while (sum >= target) {  //注意这里用的是while而不是if，因为右侧的新增的数字可能很大，需要持续收缩数组
       len = Math.min(len, j - i + 1)
-      sum -= nums[i]
+      sum -= nums[i]  //收缩不仅要i++，还要减去nums[i]
       i++
     }
     j++
@@ -162,6 +192,7 @@ var minSubArrayLen = function (target, nums) {
 ```javascript
 var largestNumber = function(nums) {
     nums = nums.sort((a, b) => {
+        //如果第一个参数应该排在前面，则返回负值
         let S1 = `${a}${b}`;
         let S2 = `${b}${a}`;
         return S2 - S1;
@@ -179,7 +210,7 @@ var largestNumber = function(nums) {
 ```javascript
 var spiralOrder = function(matrix) {
     let res=[];
-    flag=true;
+    flag=true;//flag用来标识  准备放入上 右还是下左的数据
     while(matrix.length){
         if(flag){
             //放进第一行   注意这里需要拼接而不是直接调用，否则覆盖之前的
@@ -201,6 +232,45 @@ var spiralOrder = function(matrix) {
     return res;
 };
 ```
+
+#### 螺旋矩阵 ||
+
+```javascript
+var generateMatrix = function (n) {
+    const matrix=Array.from(new Array(n),()=>new Array(n));
+    let top=0,
+        right=n-1,
+        bottom=n-1,
+        left=0,
+        num=1;
+    while(num<=n*n){//需要注意等于也可以
+        for(let i=left;i<=right;i++){//注意边界处理
+            matrix[top][i]=num;
+            num++;
+        }
+        top++;
+        for(let i=top;i<=bottom;i++){
+            matrix[i][right]=num;
+            num++;
+        }
+        right--;
+        for(let i=right;i>=left;i--){
+            matrix[bottom][i]=num;
+            num++;
+        }
+        bottom--;
+        for(let i=bottom;i>=top;i--){
+            matrix[i][left]=num;
+            num++;
+        }
+        left++;
+    }
+    return matrix;
+
+};
+```
+
+
 
 #### 旋转图像
 
@@ -224,17 +294,67 @@ var rotate = function (matrix) {
 
 #### 岛屿数量
 
-```
+```javascript
+//这道题中的岛屿数量实际上就是"成堆的1"的数量，与地形无关
+//注意别忘了return count
+const numIslands = (grid) => {
+  let count = 0
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      if (grid[i][j] === '1') {
+        count++
+        turnZero(i, j, grid)
+      }
+    }
+  }
+  return count
+}
+function turnZero(i, j, grid) {
+  if (i < 0 || i >= grid.length || j < 0 
+       || j >= grid[0].length || grid[i][j] === '0') return
+  grid[i][j] = '0'
+  turnZero(i, j + 1, grid)
+  turnZero(i, j - 1, grid)
+  turnZero(i + 1, j, grid)
+  turnZero(i - 1, j, grid)
+}
+
 ```
 
 #### 岛屿最大面积
 
-```
+```javascript
+//长度用到的次数太多  用x，y存起来
+var maxAreaOfIsland = function (grid) {
+  let x = grid.length,
+    y = grid[0].length
+  let max = 0
+  for (let i = 0; i < x; i++) {
+    for (let j = 0; j < y; j++) {
+      if (grid[i][j] == 1) {
+        max = Math.max(max, cntArea(grid, i, j, x, y))
+      }
+    }
+  }
+  return max
+}
+let cntArea = (grid, i, j, x, y) => {
+  if (i < 0 || i >= x || j < 0 || j >= y || grid[i][j] == 0) return 0
+  let count = 1
+  grid[i][j] = 0
+  count += cntArea(grid, i + 1, j, x, y)
+  count += cntArea(grid, i - 1, j, x, y)
+  count += cntArea(grid, i, j + 1, x, y)
+  count += cntArea(grid, i, j - 1, x, y)
+  return count
+}
+
 ```
 
 #### 二维数组中的查找
 
 ```javascript
+//从左下角开始搜索，大了就上移，小了右移
 var findNumberIn2DArray = function(matrix, target) {
     if(!matrix.length) return false;
     let x=matrix.length-1,y=0;
@@ -283,7 +403,7 @@ var findMin = function (nums) {
     let low=0,high=nums.length-1;
    
     while(low<high){
-         let mid = low + Math.floor((high - low) / 2);
+         let mid = Math.floor((high + low) / 2);
         if(nums[mid]<nums[high]){
             high=mid;
         }else{
@@ -465,7 +585,7 @@ CQueue.prototype.deleteHead = function () {
 ```javascript
 var merge = function (intervals) {
   let res = []
-  intervals.sort((a, b) => a[0] - b[0])
+  intervals.sort((a, b) => a[0] - b[0])//注意这里写花括号的话必须要有return
   let pre = intervals[0]
   for (let i = 1; i < intervals.length; i++) {
     let cur = intervals[i]
@@ -481,7 +601,7 @@ var merge = function (intervals) {
 }
 ```
 
-#### 接雨水 （困难）
+#### <font color=red>接雨水 （困难）</font>
 
 ```javascript
 function trap(height) {
@@ -536,6 +656,7 @@ var intersection = function (nums1, nums2) {
 var moveZeroes = function (nums) {
   if (nums == null) return
   let j = 0
+  //从前向后遍历，用i标记非零数，j标记0
   for (let i = 0; i < nums.length; i++) {
     if (nums[i] != 0) {
       let temp = nums[i]
@@ -551,6 +672,7 @@ var moveZeroes = function (nums) {
 
 ```javascript
 var isRectangleOverlap = function(rec1, rec2) {
+    //两种位置关系，两条  对角线  样式
     return !(rec1[2] <= rec2[0] ||   // left
              rec1[3] <= rec2[1] ||   // bottom
              rec2[2] <= rec1[0] ||   // right
@@ -573,12 +695,12 @@ var canThreePartsEqualSum = function(A) {
             temp = 0
         }
     }
-    return (sum!=0 && cnt==3)||(sum==0 && cnt>2)
+	return cnt>=3
 };
 
 ```
 
-#### 下一个排列
+#### <font color=red>下一个排列</font>
 
 ```javascript
 function nextPermutation(nums) {
@@ -611,7 +733,7 @@ function nextPermutation(nums) {
 
 ## 1.判断链表类
 
-#### 判断链表是否有环
+#### 环形链表
 
 ```javascript
 var hasCycle = function (head) {
@@ -621,13 +743,20 @@ var hasCycle = function (head) {
     if (fast.next == null) return false
     fast = fast.next.next
     slow = slow.next
-    if (fast == slow) {
+    if (fast == slow) {//这个判断要写在最后面，因为开始的时候都是头节点，指针移动之后才能判断
       return true
     }
   }
   return false
 }
 ```
+
+#### 环形链表 ||
+
+```
+```
+
+
 
 #### 相交链表
 
@@ -657,8 +786,11 @@ var reverseList = function (head) {
   let pre = null,
     cur = head
   while (cur) {
+      //next是cur的下一个节点
     let next = cur.next
+    //cur节点的指向断开，重新指向前一个结点
     cur.next = pre
+    //分别移动pre节点和cur节点
     pre = cur
     cur = next
   }
@@ -686,17 +818,25 @@ var mergeTwoLists = function (l1, l2) {
 
 #### 两两交换链表中的节点
 
-```javascript
-var swapPairs = function(head) {
-    if (head === null|| head.next === null) {
-        return head;
-    }
-    const newHead = head.next;
-    head.next = swapPairs(newHead.next);
-    newHead.next = head;
-    return newHead;
-};
+![image-20211206190727843](C:/Users/t1/AppData/Roaming/Typora/typora-user-images/image-20211206190727843.png)
 
+```javascript
+const swapPairs = (head) => {
+  const dummy = new ListNode(0);
+  dummy.next = head;
+  let prev = dummy;
+
+  while (head && head.next) {
+    const next = head.next; // 临时保存head.next，因为head.next待会要改变
+    head.next = next.next;
+    next.next = head;
+    prev.next = next;  
+
+    prev = head;      // 指针更新
+    head = head.next; // 指针更新
+  }
+  return dummy.next;
+};
 ```
 
 #### 回文链表
@@ -724,7 +864,7 @@ const isPalindrome = (head) => {
   let fast = head;
   let slow = head;
   let prev;
-  while (fast && fast.next) {
+  while (fast && fast.next) {//地下连续用了两个next，所以这里还要判断fast.next是否存在
     prev = slow;
     slow = slow.next;
     fast = fast.next.next;
@@ -733,7 +873,7 @@ const isPalindrome = (head) => {
   // 翻转后半段
   let head2 = null;
   while (slow) {
-    const tmp = slow.next;
+    const tmp = slow.next;//先用一个遍历将slow后驱节点存起来
     slow.next = head2;
     head2 = slow;
     slow = tmp;
@@ -777,7 +917,7 @@ var reverseBetween = function(head, left, right) {
 
 ```
 
-#### K个一组翻转链表 (困难)
+#### <font color=red>K个一组翻转链表 (困难)</font>
 
 ```javascript
 const myReverse = (head, tail) => {
@@ -821,7 +961,7 @@ var reverseKGroup = function (head, k) {
 
 ## 3.链表删除类
 
-#### 删除链表的倒数第K个节点
+#### 链表的倒数第K个节点
 
 ```javascript
 //另一道题，返回倒数第K个节点
@@ -840,20 +980,23 @@ var getKthFromEnd = function (head, k) {
 }
 ```
 
-#### 删除链表倒数第N个节点
+#### 删除链表倒数第N个节点（注意返回值全部带有next）
 
 ```javascript
 var removeNthFromEnd = function (head, n) {
-  let ret = new ListNode(0, head),
-    slow = (fast = ret)
+  	//使用虚拟头节点，只有一个节点的时候方便
+    let dummy = new ListNode(0, head),
+    slow = (fast = dummy)
   while (n--) fast = fast.next
-  if (!fast) return ret.next
+    //这里返回的是虚拟节点的下一个节点
+  if (!fast) return dummy.next
   while (fast.next) {
     fast = fast.next
     slow = slow.next
   }
+    //注意这里是俩next
   slow.next = slow.next.next
-  return ret.next
+  return dummy.next
 }
 ```
 
@@ -865,6 +1008,7 @@ var removeNthFromEnd = function (head, n) {
 
 ```javascript
 var addTwoNumbers = function (l1, l2) {
+  //head和tail用来标记新建立的链表节点
   let head = null
   tail = null
   add = 0
@@ -886,6 +1030,8 @@ var addTwoNumbers = function (l1, l2) {
       l2 = l2.next
     }
     if (add > 0) {
+      //这里将next临时指向进位数，防止其中一个链表
+      //后续为空，不为空则next会被覆盖
       tail.next = new ListNode(add)
     }
   }
@@ -903,6 +1049,7 @@ var addTwoNumbers = function (l1, l2) {
 
 ```javascript
 var addStrings = function (num1, num2) {
+    //从后往前计算
     let i=num1.length-1,
         j=num2.length-1;
     let add=0,
@@ -1037,9 +1184,10 @@ const isSubsequence = function (s, t) {
     if (s.length == 0) return true;
     let index1 = 0,
         index2 = 0;
-    while (index2 < t.length) {
+    while (index2 < t.length) {//长的字符串没到结尾
         if (s[index1] == t[index2]) {
             index1++;
+            //字串已经遍历结束
             if (index1 > s.length - 1) {
                 return true;
             }
